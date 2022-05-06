@@ -1,0 +1,15 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: demo
+
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://forclass.cqvjqu0ppwf2.ap-northeast-2.rds.amazonaws.com/my-rds-instance?autoReconnect=true # url에는 rds의 엔드포인트를 삽입
+    username: root
+    password: yumiyumi43
+    driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
+    # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
+    # application과 secret은 gitidnore에 추가, 보안에 민감하기 때문
