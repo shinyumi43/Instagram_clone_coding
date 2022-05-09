@@ -7,7 +7,7 @@ spring:
 
   datasource:
     platform: mysql
-    url: jdbc:mysql://my-rds-instance.cqvjqu0ppwf2.ap-northeast-2.rds.amazonaws.com:3306 # url에는 rds의 엔드포인트를 삽입
+    url: jdbc:mysql://my-rds-instance.cqvjqu0ppwf2.ap-northeast-2.rds.amazonaws.com:3306/my_rds_name # url에는 rds의 엔드포인트를 삽입
     username: root
     password: yumiyumi43
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
