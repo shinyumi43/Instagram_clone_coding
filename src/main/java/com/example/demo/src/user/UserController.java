@@ -114,8 +114,8 @@ public class UserController {
      */
     // Body
     @ResponseBody
-    @PatchMapping("/{userIdx}/status") // (DELETE) 127.0.0.1:9000/users
-    public BaseResponse<String> deleteUser(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
+    @PatchMapping("/{userIdx}/status") // (PATCH) 127.0.0.1:9000/users/:userIdx
+    public BaseResponse<String> deleteUser(@PathVariable("userIdx") int userIdx) {
         try{
             DeleteUserReq deleteUserReq = new DeleteUserReq(userIdx);
             userService.deleteUser(deleteUserReq);

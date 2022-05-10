@@ -90,7 +90,7 @@ public class UserDao {
     public int deleteUser(DeleteUserReq deleteUserReq){
         String deleteUserQuery = "delete from User where userIdx = ?";
         int deleteUserParam = deleteUserReq.getUserIdx();
-        return this.jdbcTemplate.queryForObject(deleteUserQuery, int.class, deleteUserParam);
+        return this.jdbcTemplate.update(deleteUserQuery, deleteUserParam);
     }
 
 }
