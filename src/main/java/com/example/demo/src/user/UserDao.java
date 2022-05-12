@@ -2,7 +2,7 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.src.user.model.DeleteUserReq;
-import com.example.demo.src.user.model.GetUserRes;
+import com.example.demo.src.user.model.GetUserFeedRes;
 import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.src.user.model.PostUserReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,11 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetUserRes> getUsers(){
+    public List<GetUserFeedRes> getUsers(){
         String getUsersQuery = "select userIdx,name,nickName,email from User";
         // list 형태의 객체를 반환할 때, query
         return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserRes(
+                (rs,rowNum) -> new GetUserFeedRes(
                         rs.getInt("userIdx"),
                         rs.getString("name"),
                         rs.getString("nickName"),
@@ -35,11 +35,11 @@ public class UserDao {
                 ));
     }
 
-    public GetUserRes getUsersByEmail(String email){
+    public GetUserFeedRes getUsersByEmail(String email){
         String getUsersByEmailQuery = "select userIdx,name,nickName,email from User where email=?";
         String getUsersByEmailParams = email;
         return this.jdbcTemplate.queryForObject(getUsersByEmailQuery,
-                (rs, rowNum) -> new GetUserRes(
+                (rs, rowNum) -> new GetUserFeedRes(
                         rs.getInt("userIdx"),
                         rs.getString("name"),
                         rs.getString("nickName"),
@@ -49,12 +49,12 @@ public class UserDao {
 
 
     // 사용자 인덱스 조회 방식에서 활용
-    public GetUserRes getUsersByIdx(int userIdx){
+    public GetUserFeedRes getUsersByIdx(int userIdx){
         String getUsersByIdxQuery = "select userIdx,name,nickName,email from User where userIdx=?";
         int getUsersByIdxParams = userIdx;
         // 하나의 객체로 반환할 때, queryForObject
         return this.jdbcTemplate.queryForObject(getUsersByIdxQuery,
-                (rs, rowNum) -> new GetUserRes(
+                (rs, rowNum) -> new GetUserFeedRes(
                         rs.getInt("userIdx"),
                         rs.getString("name"),
                         rs.getString("nickName"),
