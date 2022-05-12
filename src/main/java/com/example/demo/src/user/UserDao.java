@@ -1,10 +1,7 @@
 package com.example.demo.src.user;
 
 
-import com.example.demo.src.user.model.DeleteUserReq;
-import com.example.demo.src.user.model.GetUserFeedRes;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostUserReq;
+import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -23,23 +20,60 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetUserFeedRes> getUsers(){
-        String getUsersQuery = "select userIdx,name,nickName,email from User";
+    public GetUserInfoRes selectUserInfo(int userIdx){
+        String selectUsersInfoQuery = "select u.userIdx as userIdx,\n" +
+                "       u.nickname as nickName,\n" +
+                "       u.name as name,\n" +
+                "       u.profileImgUrl as profileImgUrl,\n" +
+                "       u.website as website,\n" +
+                "       u.introduce as introduce,\n" +
+                "       if(postCount is null, 0, followerCount) as postCount,\n" +
+                "       if(followerCount is null, 0, followerCount) as followerCount,\n" +
+                "       if(followingCount is null, 0, followingCount) as followingCount\n" +
+                "       from User as u\n" +
+                "           left join (select userIdx, count(postIdx) as postCount from Post where status = 'ACTIVE' group by userIdx) p on p.userIdx = u.userIdx\n" +
+                "           left join (select followerIdx, count(followIdx) as followerCount from Follow where status = 'ACTIVE' group by followerIdx) fc on fc.followerIdx = u.userIdx\n" +
+                "           left join (select followeeIdx, count(followIdx) as followingCount from Follow where status = 'ACTIVE' group by followeeIdx) f on f.followeeIdx = u.userIdx\n" +
+                "where u.userIdx = ? and u.status = 'ACTIVE'";
+        int selectUserInfoParam = userIdx;
         // list 형태의 객체를 반환할 때, query
-        return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserFeedRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("name"),
+        return this.jdbcTemplate.queryForObject(selectUsersInfoQuery,
+                (rs,rowNum) -> new GetUserInfoRes(
                         rs.getString("nickName"),
-                        rs.getString("email")
-                ));
+                        rs.getString("name"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("website"),
+                        rs.getString("introduce"),
+                        rs.getInt("followerCount"),
+                        rs.getInt("followingCount"),
+                        rs.getInt("postCount")
+                ), selectUserInfoParam);
     }
 
-    public GetUserFeedRes getUsersByEmail(String email){
+    public List<GetUserPostsRes> selectUserPosts(int userIdx){
+        String selectUsersPostsQuery = "select p.postIdx as postIdx,\n" +
+                "       pi.imgUrl as PostImgUrl\n" +
+                "from Post as p\n" +
+                "    join PostImgUrl as pi on pi.postIdx = p.postIdx and pi.status = 'ACTIVE'\n" +
+                "    join User as u on u.userIdx = p.postIdx\n" +
+                "where p.status = 'ACTIVE' and u.userIdx = ?\n" +
+                "group by p.postIdx\n" +
+                "having min(pi.postImgIdx)\n" +
+                "order by p.postIdx;";
+        int selectUserPostsParam = userIdx;
+        // list 형태의 객체를 반환할 때, query
+        return this.jdbcTemplate.query(selectUsersPostsQuery,
+                (rs,rowNum) -> new GetUserPostsRes(
+                        rs.getInt("postIdx"),
+                        rs.getString("postImgUrl")
+                ), selectUserPostsParam);
+    }
+
+    public GetUserRes getUsersByEmail(String email){
         String getUsersByEmailQuery = "select userIdx,name,nickName,email from User where email=?";
         String getUsersByEmailParams = email;
         return this.jdbcTemplate.queryForObject(getUsersByEmailQuery,
-                (rs, rowNum) -> new GetUserFeedRes(
+                (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
                         rs.getString("name"),
                         rs.getString("nickName"),
@@ -48,13 +82,14 @@ public class UserDao {
     }
 
 
+
     // 사용자 인덱스 조회 방식에서 활용
-    public GetUserFeedRes getUsersByIdx(int userIdx){
+    public GetUserRes getUsersByIdx(int userIdx){
         String getUsersByIdxQuery = "select userIdx,name,nickName,email from User where userIdx=?";
         int getUsersByIdxParams = userIdx;
         // 하나의 객체로 반환할 때, queryForObject
         return this.jdbcTemplate.queryForObject(getUsersByIdxQuery,
-                (rs, rowNum) -> new GetUserFeedRes(
+                (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
                         rs.getString("name"),
                         rs.getString("nickName"),
@@ -77,6 +112,15 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
                 int.class,
                 checkEmailParams);
+
+    }
+
+    public int checkUserExist(int userIdx){
+        String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";
+        int checkUserExistParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserExistQuery,
+                int.class,
+                checkUserExistParams);
 
     }
 

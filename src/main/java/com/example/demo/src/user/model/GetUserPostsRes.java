@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetUserPostRes {
+public class GetUserPostsRes {
     private int postIdx;
     private String postImgUrl;
     //private int userIdx;

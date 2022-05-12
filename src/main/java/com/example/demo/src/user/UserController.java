@@ -46,9 +46,10 @@ public class UserController {
      */
     //PathVariable
     @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/users
+    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users
     public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx")int userIdx) {
         try{
+            //현재 로그인이 된 계정과 조회를 할 피드의 계정에 대한 비교
             GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdx, userIdx);
             return new BaseResponse<>(getUserFeedRes);
         } catch(BaseException exception){
@@ -65,10 +66,10 @@ public class UserController {
      * provider에도 해당 함수를 생성
      * */
     @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users/:userIdx
-    public BaseResponse<GetUserFeedRes> getUserByIdx(@PathVariable("userIdx")int userIdx) {
+    @GetMapping("/{userIdx}/X") // (GET) 127.0.0.1:9000/users/:userIdx
+    public BaseResponse<GetUserRes> getUserByIdx(@PathVariable("userIdx")int userIdx) {
         try{
-            GetUserFeedRes getUsersRes = userProvider.getUsersByIdx(userIdx);
+            GetUserRes getUsersRes = userProvider.getUsersByIdx(userIdx);
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
