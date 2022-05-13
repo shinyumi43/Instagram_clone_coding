@@ -121,7 +121,6 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkUserExistQuery,
                 int.class,
                 checkUserExistParams);
-
     }
 
     public int modifyUserName(PatchUserReq patchUserReq){
