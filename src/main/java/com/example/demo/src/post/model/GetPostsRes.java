@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class GetPostsRes {
+    //게시물 전체를 반환하는 객체
     private int postIdx;
     private int userIdx;
     private String nickName;
