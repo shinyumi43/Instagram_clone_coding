@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public class PostDao {
     private JdbcTemplate jdbcTemplate;
-    private List<GetPostImgRes> getPostImgRes;
+    private List<GetPostImgRes> getPostImgRes; //게시물 리스트를 반환
     @Autowired
     public void setDataSource(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
