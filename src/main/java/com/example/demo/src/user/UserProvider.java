@@ -37,10 +37,12 @@ public class UserProvider {
     public GetUserFeedRes retrieveUserFeed(int userIdxByJwt, int userIdx) throws BaseException{
         // Jwt에서 받아온 userIdx는 현재 로그인된 정보, userIdx는 pathvariable로 받은 것
         Boolean isMyFeed = true;
+        //validation 처리
         if(checkUserExist(userIdx)==0){
             throw new BaseException(USERS_EMPTY_USER_ID);
         }
         try{
+            //로그인된 정보와 조회된 계정이 다르면, false
             if(userIdxByJwt != userIdx)
                 isMyFeed = false;
             GetUserInfoRes getUserInfo = userDao.selectUserInfo(userIdx);
@@ -73,6 +75,7 @@ public class UserProvider {
         }
     }
 
+    //유저가 존재하는지를 확인
     public int checkUserExist(int userIdx) throws BaseException{
         try{
             return userDao.checkUserExist(userIdx);

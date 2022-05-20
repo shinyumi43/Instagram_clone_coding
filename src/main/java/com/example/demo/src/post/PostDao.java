@@ -1,6 +1,8 @@
 package com.example.demo.src.post;
 import com.example.demo.src.post.model.GetPostImgRes;
 import com.example.demo.src.post.model.GetPostsRes;
+import com.example.demo.src.post.model.PatchPostsReq;
+import com.example.demo.src.post.model.PostImgsUrlReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -74,5 +76,48 @@ public class PostDao {
                 int.class,
                 checkUserExistParams);
     }
+
+    public int checkPostExist(int postIdx){
+        String checkPostExistQuery = "select exists(select postIdx from Post where postIdx = ?)";
+        int checkPostExistParams = postIdx;
+        return this.jdbcTemplate.queryForObject(checkPostExistQuery,
+                int.class,
+                checkPostExistParams);
+    }
+    
+    //게시물을 생성하는 쿼리
+    public int insertPosts(int userIdx, String content){
+        String insertPostQuery = "insert into Post(userIdx, content) values (?, ?)";
+        Object []insertPostParams = new Object[] {userIdx, content};
+        this.jdbcTemplate.update(insertPostQuery,
+                insertPostParams);
+        String lastInsertIdxQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdxQuery, int.class);
+    }
+
+    public int insertPostsImgs(int postIdx, PostImgsUrlReq postImgsUrlReq){
+        String insertPostImgsQuery = "insert into PostImgUrl(postIdx, imgUrl) values (?, ?)";
+        Object []insertPostImgsParams = new Object[] {postIdx, postImgsUrlReq.getImgUrl()};
+        this.jdbcTemplate.update(insertPostImgsQuery,
+                insertPostImgsParams);
+        String lastInsertIdxQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdxQuery, int.class);
+    }
+
+    public int updatePost(int postIdx, String content){
+        String updatePostQuery = "update Post set content=? where postIdx=?";
+        Object []updatePostParams = new Object[] {content, postIdx};
+        this.jdbcTemplate.update(updatePostQuery, updatePostParams);
+        String lastInsertIdxQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdxQuery, int.class);
+    }
+
+    public int deletePost(int postIdx){
+        String deletePostQuery = "update Post set status='INACTIVE' where postIdx=?";
+        Object []deletePostParams = new Object[] {postIdx};
+        return this.jdbcTemplate.update(deletePostQuery, deletePostParams);
+    }
+
+
 
 }

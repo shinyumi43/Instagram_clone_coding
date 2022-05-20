@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetUserPostsRes {
+    //게시글 객체
     private int postIdx;
     private String postImgUrl;
     //private int userIdx;

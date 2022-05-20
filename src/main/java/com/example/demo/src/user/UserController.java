@@ -35,15 +35,6 @@ public class UserController {
     }
 
 
-
-
-    /**
-     * 회원 조회 API
-     * [GET] /users
-     * 이메일 검색 조회 API
-     * [GET] /users? Email=
-     * @return BaseResponse<GetUserRes>
-     */
     //PathVariable
     @ResponseBody
     @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users

@@ -27,14 +27,15 @@ public class UserDao {
                 "       u.profileImgUrl as profileImgUrl,\n" +
                 "       u.website as website,\n" +
                 "       u.introduce as introduce,\n" +
-                "       if(postCount is null, 0, followerCount) as postCount,\n" +
+                "       if(postCount is null, 0, postCount) as postCount,\n" +
                 "       if(followerCount is null, 0, followerCount) as followerCount,\n" +
                 "       if(followingCount is null, 0, followingCount) as followingCount\n" +
                 "       from User as u\n" +
                 "           left join (select userIdx, count(postIdx) as postCount from Post where status = 'ACTIVE' group by userIdx) p on p.userIdx = u.userIdx\n" +
                 "           left join (select followerIdx, count(followIdx) as followerCount from Follow where status = 'ACTIVE' group by followerIdx) fc on fc.followerIdx = u.userIdx\n" +
                 "           left join (select followeeIdx, count(followIdx) as followingCount from Follow where status = 'ACTIVE' group by followeeIdx) f on f.followeeIdx = u.userIdx\n" +
-                "where u.userIdx = ? and u.status = 'ACTIVE'";
+                "where u.userIdx = ? and u.status = 'ACTIVE';";
+        //?에 들어갈 변수의 이름
         int selectUserInfoParam = userIdx;
         // list 형태의 객체를 반환할 때, query
         return this.jdbcTemplate.queryForObject(selectUsersInfoQuery,
@@ -55,8 +56,8 @@ public class UserDao {
                 "       pi.imgUrl as PostImgUrl\n" +
                 "from Post as p\n" +
                 "    join PostImgUrl as pi on pi.postIdx = p.postIdx and pi.status = 'ACTIVE'\n" +
-                "    join User as u on u.userIdx = p.postIdx\n" +
-                "where p.status = 'ACTIVE' and u.userIdx = ?\n" +
+                "    join User as u on u.userIdx = p.userIdx\n" +
+                "where p.status = 'ACTIVE' and u.userIdx = 2\n" +
                 "group by p.postIdx\n" +
                 "having min(pi.postImgIdx)\n" +
                 "order by p.postIdx;";
@@ -115,6 +116,7 @@ public class UserDao {
 
     }
 
+    //유저가 존재하는지를 확인
     public int checkUserExist(int userIdx){
         String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";
         int checkUserExistParams = userIdx;

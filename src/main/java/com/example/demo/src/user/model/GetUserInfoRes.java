@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetUserInfoRes {
     //private int userIdx;
+    //닉네임, 이름, 프로필 사진, 웹사이트, 소개글, 팔로워수, 팔로잉수, 게시물 개수
     private String nickName;
     private String name;
     private String profileImgUrl;
