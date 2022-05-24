@@ -83,6 +83,7 @@ public class PostController {
         }
     }
 
+    //uri가 일치하지 않도록 /status를 추가
     @ResponseBody
     @PatchMapping("/{postIdx}/status")
     public BaseResponse<String> deletePost(@PathVariable("postIdx") int postIdx) {
