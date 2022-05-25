@@ -53,9 +53,12 @@ public class PostController {
     @PostMapping("")
     public BaseResponse<PostPostsRes> createPosts(@RequestBody PostPostsReq postPostsReq) {
         try{
+            //validation 처리 부분
+            //게시물 내용의 길이를 초과할 경우
             if(postPostsReq.getContent().length() > 450){
                 return new BaseResponse<>(BaseResponseStatus.POST_POSTS_INVALID_CONTENTS);
             }
+            //이미지를 아무것도 추가하지 않은 경우
             if(postPostsReq.getPostImgUrls().size() < 1){
                 return new BaseResponse<>(BaseResponseStatus.POST_POSTS_EMPTY_IMGURL);
             }
@@ -88,6 +91,7 @@ public class PostController {
     @PatchMapping("/{postIdx}/status")
     public BaseResponse<String> deletePost(@PathVariable("postIdx") int postIdx) {
         try{
+            //String 값을 결과로 반환
             postService.deletePost(postIdx);
             String result = "삭제를 성공했습니다.";
             return new BaseResponse<>(result);
