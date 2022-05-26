@@ -93,6 +93,7 @@ public class PostController {
         try{
             //String 값을 결과로 반환
             postService.deletePost(postIdx);
+            //삭제 성공 시 아래의 텍스트를 반환
             String result = "삭제를 성공했습니다.";
             return new BaseResponse<>(result);
         } catch(BaseException exception){

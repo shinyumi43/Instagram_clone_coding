@@ -87,11 +87,16 @@ public class PostDao {
     
     //게시물을 생성하는 쿼리
     public int insertPosts(int userIdx, String content){
+        //Post 테이블에 userIdx, content 삽입
         String insertPostQuery = "insert into Post(userIdx, content) values (?, ?)";
+        //반환할 객체를 생성
         Object []insertPostParams = new Object[] {userIdx, content};
+        //쿼리를 실행
         this.jdbcTemplate.update(insertPostQuery,
                 insertPostParams);
+        //방금 삽입된 userIdx, content 에 대한 id를 반환
         String lastInsertIdxQuery = "select last_insert_id()";
+        //객체 하나를 반환할 경우에 사용
         return this.jdbcTemplate.queryForObject(lastInsertIdxQuery, int.class);
     }
 
