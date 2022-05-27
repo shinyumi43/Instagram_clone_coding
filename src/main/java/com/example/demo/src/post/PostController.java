@@ -53,6 +53,10 @@ public class PostController {
     @PostMapping("")
     public BaseResponse<PostPostsRes> createPosts(@RequestBody PostPostsReq postPostsReq) {
         try{
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(postPostsReq.getUserIdx()!=userIdxByJwt){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
             //validation 처리 부분
             //게시물 내용의 길이를 초과할 경우
             if(postPostsReq.getContent().length() > 450){

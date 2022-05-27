@@ -40,6 +40,7 @@ public class JwtService {
     @return String
      */
     public String getJwt(){
+        //헤더에서 Jwt를 받아오는 함수
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader("X-ACCESS-TOKEN");
     }
